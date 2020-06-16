@@ -1,19 +1,35 @@
 import React, { Component } from 'react';
-import logo from './logo.svg';
 import './App.css';
+import Header from '../src/components/Header'
+import Weather from '../src/components/Weather'
+import Favorites from '../src/components/Favorites'
+import Box from '@material-ui/core/Box'
+import { Switch, Route, BrowserRouter as Router, } from 'react-router-dom'
+
 
 class App extends Component {
   render() {
     return (
-      <div className="App">
-        <div className="App-header">
-          <img src={logo} className="App-logo" alt="logo" />
-          <h2>Welcome to React</h2>
+      <Router>
+        <div className="App">
+          <Header></Header>
+          <Box display='flex' justifyContent='center'>
+            <Box>
+              <Switch>
+                <Route path="/weather">
+                  <Weather />
+                </Route>
+                <Route path="/favorites">
+                  <Favorites />
+                </Route>
+                <Route path="/">
+                  <Weather />
+                </Route>
+              </Switch>
+            </Box>
+          </Box>
         </div>
-        <p className="App-intro">
-          To get started, edit <code>src/App.js</code> and save to reload.
-        </p>
-      </div>
+      </Router>
     );
   }
 }
