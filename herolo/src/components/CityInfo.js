@@ -7,7 +7,7 @@ import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 class CityInfo extends Component {
     render() {
-        var { location, locationName, fiveDaysWeather } = this.props
+        let { location, locationName, fiveDaysWeather, isFavorite, RemoveFromFavorties, addToFavorties } = this.props
 
         return (
             <React.Fragment>
@@ -22,9 +22,9 @@ class CityInfo extends Component {
                     </div>
                     <div className='favorties'>
                         <Box mr={3}>
-                            {true ? <FavoriteBorderIcon fontSize='large' /> : <FavoriteIcon fontSize='large' />}
+                            {isFavorite ? <FavoriteIcon fontSize='large' /> : <FavoriteBorderIcon fontSize='large' />}
                         </Box>
-                        <Button variant='outlined'>Add to Favorites</Button>
+                        {isFavorite ? <Button variant='outlined' onClick={RemoveFromFavorties}>Remove from Favorites</Button> : <Button variant='outlined' onClick={addToFavorties}>Add to Favorites</Button>}
                     </div>
                 </Box>
                 <div className='weatherText'>{location ? location.WeatherText : 'Cloudy'}</div>

@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 
-const apikey = 'vb073iU40F1M50QejdrAYpCTr0GZMU1t'
+const apikey = 'WsgcEps6tQQpkjVRnDCl74HGx7gAzV1V'
 
 export function getLocations(locationString) {
     return axios({

@@ -3,31 +3,25 @@ import './App.css';
 import Header from '../src/components/Header'
 import Weather from '../src/components/Weather'
 import Favorites from '../src/components/Favorites'
-import Box from '@material-ui/core/Box'
-import { Switch, Route, BrowserRouter as Router, } from 'react-router-dom'
+import { Switch, Route, BrowserRouter as Router } from 'react-router-dom'
+import history from './history'
 
-
-class App extends Component {
+class App extends Component {  
   render() {
+
     return (
-      <Router>
+      <Router history={history}>
         <div className="App">
           <Header></Header>
-          <Box display='flex' justifyContent='center'>
-            <Box>
-              <Switch>
-                <Route path="/weather">
-                  <Weather />
-                </Route>
-                <Route path="/favorites">
-                  <Favorites />
-                </Route>
-                <Route path="/">
-                  <Weather />
-                </Route>
-              </Switch>
-            </Box>
-          </Box>
+          <Switch>
+            <Route path="/weather">
+              <Weather history={history}/>
+            </Route>
+            <Route path="/favorites" component={Favorites}>
+            </Route>
+            <Route path="/" component={Weather}>
+            </Route>
+          </Switch>
         </div>
       </Router>
     );
