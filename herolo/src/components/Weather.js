@@ -143,7 +143,7 @@ class Weather extends Component {
                             </Paper>
                         </Box>
                     </Box>
-                </Container>}
+                </Container>
             </React.Fragment >
         );
     }
