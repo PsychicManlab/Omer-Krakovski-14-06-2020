@@ -16,7 +16,11 @@ class FavoriteBox extends Component {
             this.setState({
                 locationWeather: resultCurrentCondition[0]
             })
-        })
+        }).catch((error) => this.errorHandle())
+    }
+
+    errorHandle() {
+        this.props.history.push('/error')
     }
 
     moveToWeather() {

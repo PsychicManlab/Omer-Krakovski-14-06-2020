@@ -15,16 +15,12 @@ class DayWeather extends Component {
         let temperature = day.Temperature.Maximum
 
         return (
-            <Box m={1} border={1}>
-                <Grid container justify='center' alignItems='center' style={{ width: '170px', height: '150px' }} spacing={1}>
-                    <Grid container item xs={12} justify='center' spacing={5}>
-                        <Typography variant='h5'>{stringDay}</Typography>
-                    </Grid>
-                    <Grid container item xs={12} justify='center' spacing={5}>
-                        <Typography variant='h5'>{temperature.Value} {temperature.Unit}</Typography>
-                    </Grid>
-                </Grid>
-            </Box>
+            <Grid item ms={12}>
+                <Box width='100px' border={1} m={4} p={4}>
+                    <Typography variant='h6'>{stringDay}</Typography>
+                    <Typography variant='h6'>{temperature.Value} {temperature.Unit}</Typography>
+                </Box>
+            </Grid>
         )
     }
 }

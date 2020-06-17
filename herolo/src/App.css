@@ -5,6 +5,7 @@
 .App-header {
   list-style-type: none;
   height: 75px;
+  margin: 0px;
   color: white;
   background-color: #222;
   display: flex;

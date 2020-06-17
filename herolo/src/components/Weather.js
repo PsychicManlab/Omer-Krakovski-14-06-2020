@@ -4,12 +4,7 @@ import Autocomplete from '@material-ui/lab/Autocomplete';
 import { getLocations, getCurrentCondition, getFiveDayWeather } from '../model/models';
 import Box from '@material-ui/core/Box'
 import CityInfo from './CityInfo';
-
-const defaultProps = {
-    mt: 10,
-    bgcolor: 'background.paper',
-    borderColor: 'text.primary',
-};
+import { Paper, Container } from '@material-ui/core';
 
 class Weather extends Component {
     constructor(props) {
@@ -21,7 +16,8 @@ class Weather extends Component {
             selectedLocationFiveDaysWeather: {},
             selectedLocationKey: '215854',
             favorites: localStorage,
-            isFavorite: false
+            isFavorite: false,
+            isError: false
         }
         this.inputChange = this.inputChange.bind(this)
         this.onChange = this.onChange.bind(this)
@@ -31,31 +27,31 @@ class Weather extends Component {
 
     componentDidMount() {
         let locationKey = new URLSearchParams(document.location.search).get('locationKey')
-        if(locationKey) {
-            getCurrentCondition(locationKey).then((resultCurrentCondition) => {
+        if (locationKey) {
+            getCurrentCondition(locationKey).then((resultCurrentCondition, fail) => {
                 this.setState({
                     selectedLocationWeather: resultCurrentCondition,
                     selectedLocationKey: locationKey,
                     selectedName: localStorage.getItem(locationKey)
                 })
-            })
+            }).catch((error) => this.handleError())
             getFiveDayWeather(locationKey).then((resultFiveDaysCondition) => {
                 this.setState({
                     selectedLocationFiveDaysWeather: resultFiveDaysCondition
                 })
-            })
+            }).catch((error) => this.handleError())
         } else {
             getCurrentCondition('215854').then((resultCurrentCondition) => {
                 this.setState({
                     selectedLocationWeather: resultCurrentCondition,
                     selectedLocationKey: '215854'
                 })
-            })
+            }).catch((error) => this.handleError())
             getFiveDayWeather('215854').then((resultFiveDaysCondition) => {
                 this.setState({
                     selectedLocationFiveDaysWeather: resultFiveDaysCondition
                 })
-            })
+            }).catch((error) => this.handleError())
         }
         if (this.state.favorites.getItem(this.state.selectedLocationKey) !== null) {
             this.setState({
@@ -76,7 +72,7 @@ class Weather extends Component {
                         locations: resultLocations
                     })
                 }
-            }).catch()
+            }).catch((error) => this.handleError())
         } else {
             this.setState({
                 locations: []
@@ -106,51 +102,48 @@ class Weather extends Component {
                 this.setState({
                     selectedLocationWeather: resultCurrentCondition,
                     selectedName: value.LocalizedName,
-                    selectedLocationKey: value.Key
+                    selectedLocationKey: value.Key,
+                    locations: []
                 })
-            })
+            }).catch((error) => this.handleError())
             getFiveDayWeather(value.Key).then((resultFiveDaysCondition) => {
                 this.setState({
                     selectedLocationFiveDaysWeather: resultFiveDaysCondition
                 })
-            })
-        }
-        if (this.state.favorites.getItem(value.Key) !== null) {
-            this.setState({
-                isFavorite: true
-            })
-        } else {
-            this.setState({
-                isFavorite: false
-            })
+            }).catch((error) => this.handleError())
         }
     }
+
+    handleError() {
+        this.props.history.push('/error')
+    }
+
 
     render() {
         return (
             <React.Fragment>
-                <Box display='flex' justifyContent='center'>
+                <Container>
                     <Box>
-                        <Box display='flex' justifyContent='center' alignItems='center'>
+                        <Box m={5} display='flex' justifyContent='center' alignItems='center'>
                             <Autocomplete
                                 id="combo-box-demo"
                                 options={this.state.locations}
                                 getOptionLabel={(option) => option.LocalizedName}
                                 onInputChange={this.inputChange}
-                                getOptionSelected={(option, value) => option === value}
+                                getOptionSelected={(option, value) => option.Key === value.Key}
                                 onChange={this.onChange}
                                 style={{ width: 300 }}
                                 clearOnBlur={false}
                                 renderInput={(params) => <TextField {...params} label="Locations" variant="outlined" />}
                             />
                         </Box>
-                        <Box>
-                            <Box style={{ width: '1000px', height: '600px' }} border={1} {...defaultProps}>
+                        <Box mt={5}>
+                            <Paper elevation={3}>
                                 <CityInfo location={this.state.selectedLocationWeather[0]} locationName={this.state.selectedName} fiveDaysWeather={this.state.selectedLocationFiveDaysWeather} selectedLocationKey={this.state.selectedLocationKey} isFavorite={this.state.isFavorite} addToFavorties={this.addToFavorties} RemoveFromFavorties={this.RemoveFromFavorties}></CityInfo>
-                            </Box>
+                            </Paper>
                         </Box>
                     </Box>
-                </Box>
+                </Container>}
             </React.Fragment >
         );
     }
