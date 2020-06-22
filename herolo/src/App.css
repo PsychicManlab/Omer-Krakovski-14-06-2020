@@ -1,13 +1,35 @@
+html, #root, body {
+  height: 100%;
+}
+
 .App {
   text-align: center;
+  height: 100%;
+}
+
+.Dark-App {
+  text-align: center;
+  background-color:	#787878;
+  height: 100%;
 }
 
 .App-header {
   list-style-type: none;
-  height: 75px;
+  height: 100px;
   margin: 0px;
   color: white;
   background-color: #222;
+  display: flex;
+  justify-content: space-between;
+  box-shadow: 3px 5px 5px 5px rgba(238, 196, 196, 0.5)
+}
+
+.Dark-App-header {
+  list-style-type: none;
+  height: 100px;
+  margin: 0px;
+  color: black;
+  background-color: white;
   display: flex;
   justify-content: space-between;
   box-shadow: 3px 5px 5px 5px rgba(238, 196, 196, 0.5)

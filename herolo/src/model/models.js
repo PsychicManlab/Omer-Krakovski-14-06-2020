@@ -1,6 +1,6 @@
 const axios = require('axios').default;
 
-const apikey = 'sTnVnt0Gy2gadVM6E6kxKGNcDoDfszCx'
+const apikey = 'dVHGK8BQoamwmFUkfoCc5GjY3emalitB'
 
 export function getLocations(locationString) {
     return axios({
@@ -28,6 +28,16 @@ export function getFiveDayWeather(locationKey) {
         url: `https://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${apikey}&metric=true`,
     }).then((response, error) => {
         var results = response.data.DailyForecasts
+        return results
+    })
+}
+
+export function getCurrentLocation(lat, lon) {
+    return axios({
+        method: 'get',
+        url: `https://dataservice.accuweather.com//locations/v1/cities/geoposition/search?apikey=${apikey}&q=${lat}%2C${lon}`,
+    }).then((response, error) => {
+        var results = response.data
         return results
     })
 }

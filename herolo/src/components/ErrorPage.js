@@ -6,7 +6,7 @@ class ErrorPage extends Component {
     render() {
         return (
             <Paper>
-                You have exceed the number of uses on the API
+                There has been an error
             </Paper>
         );
     }

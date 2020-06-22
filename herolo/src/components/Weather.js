@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import TextField from '@material-ui/core/TextField'
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import { getLocations, getCurrentCondition, getFiveDayWeather } from '../model/models';
+import { getLocations, getCurrentCondition, getFiveDayWeather, getCurrentLocation } from '../model/models';
 import Box from '@material-ui/core/Box'
 import CityInfo from './CityInfo';
 import { Paper, Container } from '@material-ui/core';
@@ -32,7 +32,8 @@ class Weather extends Component {
                 this.setState({
                     selectedLocationWeather: resultCurrentCondition,
                     selectedLocationKey: locationKey,
-                    selectedName: localStorage.getItem(locationKey)
+                    selectedName: localStorage.getItem(locationKey),
+                    isFavorite: true
                 })
             }).catch((error) => this.handleError())
             getFiveDayWeather(locationKey).then((resultFiveDaysCondition) => {
@@ -41,17 +42,38 @@ class Weather extends Component {
                 })
             }).catch((error) => this.handleError())
         } else {
-            getCurrentCondition('215854').then((resultCurrentCondition) => {
-                this.setState({
-                    selectedLocationWeather: resultCurrentCondition,
-                    selectedLocationKey: '215854'
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition((position) => {
+                    getCurrentLocation(position.coords.latitude, position.coords.longitude).then((resultCurrentLocation) => {
+                        this.setState({
+                            selectedLocationKey: resultCurrentLocation.Key,
+                            selectedName: resultCurrentLocation.LocalizedName
+                        })
+                    }).catch((error) => console.log(error))
                 })
-            }).catch((error) => this.handleError())
-            getFiveDayWeather('215854').then((resultFiveDaysCondition) => {
-                this.setState({
-                    selectedLocationFiveDaysWeather: resultFiveDaysCondition
-                })
-            }).catch((error) => this.handleError())
+                getCurrentCondition(this.state.selectedLocationKey).then((resultCurrentCondition) => {
+                    this.setState({
+                        selectedLocationWeather: resultCurrentCondition,
+                    })
+                }).catch((error) => this.handleError())
+                getFiveDayWeather(this.state.selectedLocationKey).then((resultFiveDaysCondition) => {
+                    this.setState({
+                        selectedLocationFiveDaysWeather: resultFiveDaysCondition
+                    })
+                }).catch((error) => this.handleError())
+            } else {
+                getCurrentCondition('215854').then((resultCurrentCondition) => {
+                    this.setState({
+                        selectedLocationWeather: resultCurrentCondition,
+                        selectedLocationKey: '215854'
+                    })
+                }).catch((error) => this.handleError())
+                getFiveDayWeather('215854').then((resultFiveDaysCondition) => {
+                    this.setState({
+                        selectedLocationFiveDaysWeather: resultFiveDaysCondition
+                    })
+                }).catch((error) => this.handleError())
+            }
         }
         if (this.state.favorites.getItem(this.state.selectedLocationKey) !== null) {
             this.setState({
@@ -111,6 +133,15 @@ class Weather extends Component {
                     selectedLocationFiveDaysWeather: resultFiveDaysCondition
                 })
             }).catch((error) => this.handleError())
+            if (this.state.favorites.getItem(this.state.selectedLocationKey) !== null) {
+                this.setState({
+                    isFavorite: true
+                })
+            } else {
+                this.setState({
+                    isFavorite: false
+                })
+            }
         }
     }
 
@@ -118,29 +149,39 @@ class Weather extends Component {
         this.props.history.push('/error')
     }
 
+    isDarkMode() {
+        return localStorage.getItem('darkMode')
+    }
+
 
     render() {
+
+        let isDarkMode = this.isDarkMode() === 'true'
+
         return (
             <React.Fragment>
                 <Container>
                     <Box>
                         <Box m={5} display='flex' justifyContent='center' alignItems='center'>
                             <Autocomplete
-                                id="combo-box-demo"
                                 options={this.state.locations}
                                 getOptionLabel={(option) => option.LocalizedName}
                                 onInputChange={this.inputChange}
                                 getOptionSelected={(option, value) => option.Key === value.Key}
                                 onChange={this.onChange}
-                                style={{ width: 300 }}
+                                style={{ width: '100%' }}
                                 clearOnBlur={false}
                                 renderInput={(params) => <TextField {...params} label="Locations" variant="outlined" />}
                             />
                         </Box>
                         <Box mt={5}>
-                            <Paper elevation={3}>
-                                <CityInfo location={this.state.selectedLocationWeather[0]} locationName={this.state.selectedName} fiveDaysWeather={this.state.selectedLocationFiveDaysWeather} selectedLocationKey={this.state.selectedLocationKey} isFavorite={this.state.isFavorite} addToFavorties={this.addToFavorties} RemoveFromFavorties={this.RemoveFromFavorties}></CityInfo>
-                            </Paper>
+                            {isDarkMode ?
+                                <Paper style={{ backgroundColor: '#686868', color: 'white' }} elevation={3}>
+                                    <CityInfo location={this.state.selectedLocationWeather[0]} locationName={this.state.selectedName} fiveDaysWeather={this.state.selectedLocationFiveDaysWeather} selectedLocationKey={this.state.selectedLocationKey} isFavorite={this.state.isFavorite} addToFavorties={this.addToFavorties} RemoveFromFavorties={this.RemoveFromFavorties} isDarkMode={isDarkMode}></CityInfo>
+                                </Paper> :
+                                <Paper elevation={3}>
+                                    <CityInfo location={this.state.selectedLocationWeather[0]} locationName={this.state.selectedName} fiveDaysWeather={this.state.selectedLocationFiveDaysWeather} selectedLocationKey={this.state.selectedLocationKey} isFavorite={this.state.isFavorite} addToFavorties={this.addToFavorties} RemoveFromFavorties={this.RemoveFromFavorties}></CityInfo>
+                                </Paper>}
                         </Box>
                     </Box>
                 </Container>
