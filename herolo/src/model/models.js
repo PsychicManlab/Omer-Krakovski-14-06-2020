@@ -25,7 +25,7 @@ export function getCurrentCondition(locationKey) {
 export function getFiveDayWeather(locationKey) {
     return axios({
         method: 'get',
-        url: `https://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${apikey}&metric=true`,
+        url: `https://dataservice.accuweather.com/forecasts/v1/daily/5day/${locationKey}?apikey=${apikey}&metric=${localStorage.getItem('isFahrenheit') === 'false'}`,
     }).then((response, error) => {
         var results = response.data.DailyForecasts
         return results

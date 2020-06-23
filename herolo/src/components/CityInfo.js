@@ -1,12 +1,12 @@
 import React, { Component } from 'react';
-import { Box, Button, Grid, Typography } from '@material-ui/core';
+import { Box, Button, Grid, Typography, Switch } from '@material-ui/core';
 import CityDayWeather from '../components/CityDayWeather'
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 
 class CityInfo extends Component {
     render() {
-        let { location, locationName, fiveDaysWeather, isFavorite, RemoveFromFavorties, addToFavorties } = this.props
+        let { location, locationName, fiveDaysWeather, isFavorite, RemoveFromFavorties, addToFavorties, isFahrenheit, changeDegree } = this.props
 
         return (
             <React.Fragment>
@@ -17,7 +17,7 @@ class CityInfo extends Component {
                                 {locationName ? locationName : ''}
                             </Box>
                             <Box>
-                                {location ? location.Temperature.Metric.Value : ''} {location ? location.Temperature.Metric.Unit : ''}
+                                {location ? (isFahrenheit ? location.Temperature.Imperial.Value : location.Temperature.Metric.Value) : ''} {location ? (isFahrenheit ? location.Temperature.Imperial.Unit : location.Temperature.Metric.Unit) : ''}
                             </Box>
                         </Box>
                     </Grid>
@@ -31,9 +31,23 @@ class CityInfo extends Component {
                             </Box>
                         </Box>
                     </Grid>
+                    <Grid item xs={12} sm={12}>
+                        <Box m={4}>
+                            {isFahrenheit ? <Typography>
+                                Fahrenheit
+                            </Typography> :
+                                <Typography>
+                                    Celsius
+                                </Typography>}
+                            <Switch
+                                onChange={changeDegree}
+                                checked={isFahrenheit}
+                            >Hello</Switch>
+                        </Box>
+                    </Grid>
                     <Grid item sm={12} xs={12}>
                         <Box mb={8}>
-                            <Typography variant='h1'>{location ? location.WeatherText : 'Cloudy'}</Typography>
+                            <Typography variant='h1'>{location ? location.WeatherText : ''}</Typography>
                         </Box>
                     </Grid>
                     <Grid item sm={12} xs={12}>

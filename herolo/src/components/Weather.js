@@ -17,12 +17,14 @@ class Weather extends Component {
             selectedLocationKey: '215854',
             favorites: localStorage,
             isFavorite: false,
-            isError: false
+            isError: false,
+            isFahrenheit: localStorage.getItem('isFahrenheit') === 'true'
         }
         this.inputChange = this.inputChange.bind(this)
         this.onChange = this.onChange.bind(this)
         this.addToFavorties = this.addToFavorties.bind(this)
         this.RemoveFromFavorties = this.RemoveFromFavorties.bind(this)
+        this.changeDegree = this.changeDegree.bind(this)
     }
 
     componentDidMount() {
@@ -118,6 +120,26 @@ class Weather extends Component {
         })
     }
 
+    changeDegree(event, value) {
+        if (!value) {
+            localStorage.setItem('isFahrenheit', false)
+            this.setState({
+                isFahrenheit: false
+            })
+            
+        } else {
+            localStorage.setItem('isFahrenheit', true)
+            this.setState({
+                isFahrenheit: true
+            })
+        }
+        getFiveDayWeather(this.state.selectedLocationKey).then((resultFiveDaysCondition) => {
+            this.setState({
+                selectedLocationFiveDaysWeather: resultFiveDaysCondition
+            })
+        }).catch((error) => this.handleError())
+    }
+
     onChange(event, value) {
         if (value) {
             getCurrentCondition(value.Key).then((resultCurrentCondition) => {
@@ -177,10 +199,10 @@ class Weather extends Component {
                         <Box mt={5}>
                             {isDarkMode ?
                                 <Paper style={{ backgroundColor: '#686868', color: 'white' }} elevation={3}>
-                                    <CityInfo location={this.state.selectedLocationWeather[0]} locationName={this.state.selectedName} fiveDaysWeather={this.state.selectedLocationFiveDaysWeather} selectedLocationKey={this.state.selectedLocationKey} isFavorite={this.state.isFavorite} addToFavorties={this.addToFavorties} RemoveFromFavorties={this.RemoveFromFavorties} isDarkMode={isDarkMode}></CityInfo>
+                                    <CityInfo location={this.state.selectedLocationWeather[0]} locationName={this.state.selectedName} fiveDaysWeather={this.state.selectedLocationFiveDaysWeather} selectedLocationKey={this.state.selectedLocationKey} isFavorite={this.state.isFavorite} addToFavorties={this.addToFavorties} RemoveFromFavorties={this.RemoveFromFavorties} isDarkMode={isDarkMode} isFahrenheit={this.state.isFahrenheit} changeDegree={this.changeDegree}></CityInfo>
                                 </Paper> :
                                 <Paper elevation={3}>
-                                    <CityInfo location={this.state.selectedLocationWeather[0]} locationName={this.state.selectedName} fiveDaysWeather={this.state.selectedLocationFiveDaysWeather} selectedLocationKey={this.state.selectedLocationKey} isFavorite={this.state.isFavorite} addToFavorties={this.addToFavorties} RemoveFromFavorties={this.RemoveFromFavorties}></CityInfo>
+                                    <CityInfo location={this.state.selectedLocationWeather[0]} locationName={this.state.selectedName} fiveDaysWeather={this.state.selectedLocationFiveDaysWeather} selectedLocationKey={this.state.selectedLocationKey} isFavorite={this.state.isFavorite} addToFavorties={this.addToFavorties} RemoveFromFavorties={this.RemoveFromFavorties} isFahrenheit={this.state.isFahrenheit} changeDegree={this.changeDegree}></CityInfo>
                                 </Paper>}
                         </Box>
                     </Box>
